@@ -2,7 +2,7 @@
    <main>
       <div class="container">
          <div class="text-center">
-            <img src="src/assets/icons/mortgage.svg" alt="logo" width="100" height="100">
+            <img src="/src/assets/icons/mortgage.svg" alt="logo" width="100" height="100">
          </div>
          <div>
             <h1 class="mb-4 mt-3">Mortgate calculator</h1>
