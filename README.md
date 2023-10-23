@@ -26,3 +26,6 @@ npm run dev
 ```sh
 npm run build
 ```
+
+### Icon packs from
+https://icon-icons.com/es/pack/Business-and-Finance-Colorful-Free-Hand-drawn-Set/1675

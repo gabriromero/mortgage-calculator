@@ -1,6 +1,10 @@
 <template>
     <main>
         <div class="container">
+            <div class="text-center">
+                <img src="src/assets/icons/mortgage.svg" alt="logo" width="100" height="100">
+            </div>
+            <div>
             <h1 class="mb-4 mt-3">Mortgate calculator</h1>
 
             <div class="form-group row">
@@ -33,6 +37,7 @@
                 <p class="text-center">You will end up paying the bank <b>{{ totalToPay }}€</b></p>
                 <p class="text-center">A total of <b>{{ this.totalInterest }}€</b> in interest (<b>{{ this.interestPercentage }}</b>)</p>
             </div>
+        </div>
         </div>
     </main>
 </template>

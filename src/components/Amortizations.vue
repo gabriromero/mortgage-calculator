@@ -1,6 +1,9 @@
 <template>
     <main>
         <div class="container">
+            <div class="text-center">
+                <img src="src/assets/icons/amortization.svg" alt="logo" width="100" height="100">
+            </div>
             <h1 class="mb-4 mt-3">Planned amortizations</h1>
             <div class="amortizations-options d-flex flex-column">
                 <div class="form-check form-check-inline">
