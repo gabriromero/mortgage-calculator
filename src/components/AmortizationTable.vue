@@ -3,19 +3,19 @@
       <!-- To repeat -->
       <table class="zebra-table">
          <tr>
-            <th style="width: 10%;">
+            <th class="w-5">
                <b>Month number</b>
             </th>
-            <th style="width: 15%;">
+            <th class="w-10">
                <b>Interests</b>
             </th>
-            <th style="width: 15%;">
+            <th class="w-10">
                <b>Amortization</b>
             </th>
-            <th style="width: 20%;">
+            <th class="w-10">
                <b>Total payment</b>
             </th>
-            <th style="width: 10%;">
+            <th class="w-10">
                <b>Pending</b>
             </th>
          </tr>

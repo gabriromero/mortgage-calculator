@@ -3,19 +3,12 @@
       <OptionsTab @change-mode="updateMode" />
    </div>
    <div>
-   </div>
-   <div v-if="!this.isAdvanced">
-      <main>
-         <MortgageForm @retrieveMortgageValues="updateMortgageValues" />
-      </main>
-   </div>
-   <div v-else>
       <div class="container">
          <div class="row justify-content-md-center">
             <div class="col col-lg-6">
                <MortgageForm @retrieveMortgageValues="updateMortgageValues" />
             </div>
-            <div class="col col-lg-6">
+            <div v-if="isAdvanced" class="col col-lg-6">
                <AmortizationsForm
                   @retrieveAmortizationData="updateAmortizationData"
                   :mortgageValues="mortgageValues"
