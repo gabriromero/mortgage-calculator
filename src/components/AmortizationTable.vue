@@ -1,6 +1,5 @@
 <template>
    <div>
-      <!-- To repeat -->
       <table class="zebra-table">
          <tr>
             <th class="w-5">
@@ -99,15 +98,14 @@ export default {
 <style>
 
 .zebra-table {
-  border-collapse: collapse;
-  width: 100%;
   background-color: #7979792c;
 }
 
 .zebra-table th, .zebra-table td {
   border: 1px solid #ccc;
-  padding: 8px;
   text-align: center;
+  padding-bottom: 0.7em;
+  padding-top: 0.7em;
 }
 
 
