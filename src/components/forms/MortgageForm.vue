@@ -10,24 +10,24 @@
             <div class="form-group row">
                <label for="inputEmail3" class="col-sm-6 col-form-label">Amount</label>
                <div class="col-sm-6">
-                  <input class="form-control text-center"
-                         v-model="inputAmount" id="inputEmail3" placeholder="Amount">
+                  <money3 class="form-control text-center" v-bind="amountFormat"
+                          v-model="inputAmount" id="inputEmail3" placeholder="Amount"/>
                </div>
             </div>
             <div class="form-group row">
                <label for="inputPassword3" class="col-sm-6 col-form-label">TAE</label>
                <div class="col-sm-6">
-                  <input class="form-control text-center"
-                         v-model="inputTAE" id="inputPassword3" placeholder="% TAE">
+                  <money3 class="form-control text-center" v-bind="TAEFormat"
+                          v-model="inputTAE" id="inputPassword3" placeholder="% TAE"/>
                </div>
             </div>
             <div class="form-group row">
                <label for="inputPassword3" class="col-sm-6 col-form-label">Years</label>
                <div class="col-sm-6">
-                  <input class="form-control text-center" v-model="inputYears"
-                         type="number"
-                         max="2"
-                         placeholder="Years"
+                  <money3 class="form-control text-center" v-bind="yearsFormat"
+                          v-model="inputYears"
+                          type="number"
+                          placeholder="Years"
                   />
                </div>
             </div>
@@ -50,72 +50,47 @@
 
 <script>
 import {monthlyPaymentFormula} from '../../utils/mortgageCalculations';
+import {
+   amountFormat,
+   TAEFormat,
+   yearsFormat,
+   numberToMilesAndCommaFormat,
+   milesAndCommaToNumberFormat,
+} from '../../utils/format';
+import {Money3Component} from 'v-money3';
 export default {
    name: 'MortgageForm',
    data() {
       return {
-         inputAmount: '100.000',
-         inputTAE: '3.5',
+         inputAmount: '100000',
+         inputTAE: '3.50',
          inputYears: '30',
          monthlyPayment: '-',
          totalToPay: 0,
          totalInterest: 0,
+         amountFormat: amountFormat,
+         TAEFormat: TAEFormat,
+         yearsFormat: yearsFormat,
       };
    },
    watch: {
-      inputAmount: function(input) {
-         this.inputAmount = input.replace(/\D/g, '')
-            .replace(/\B(?=(\d{3})+(?!\d)\.?)/g, '.');
-
-         const maxAmountLength = 10;
-         if (this.inputAmount.length > maxAmountLength) {
-            this.inputAmount = this.inputAmount.substring(0, maxAmountLength);
-         }
-
-         this.calculateMonthlyPayment();
+      inputAmount: function() {
+         this.calculateMonthlyPayment(this.inputAmount, this.inputTAE, this.inputYears);
       },
-      inputTAE: function(input) {
-         const cleanedInput = input.replace(/\D/g, '');
-
-         if (cleanedInput.length > 0) {
-            let formattedInput = cleanedInput[0];
-            if (cleanedInput.length > 1) {
-               formattedInput += '.' + cleanedInput.slice(1, cleanedInput.length);
-            }
-            this.inputTAE = formattedInput;
-         } else {
-            this.inputTAE = '';
-         }
-
-         this.calculateMonthlyPayment();
+      inputTAE: function() {
+         this.calculateMonthlyPayment(this.inputAmount, this.inputTAE, this.inputYears);
       },
       inputYears: function() {
-         const maxYears = 99;
-         if (this.inputYears > maxYears) {
-            this.inputYears = maxYears;
-         }
-         this.calculateMonthlyPayment();
+         this.calculateMonthlyPayment(this.inputAmount, this.inputTAE, this.inputYears);
       },
    },
    methods: {
-      calculateMonthlyPayment() {
-         const amount = parseInt(this.inputAmount.replaceAll('.', ''));
-         const TAE = parseFloat(this.inputTAE);
-         const years = this.inputYears;
-
-         if (this.inputAmount == '' || this.inputTAE == '' ||
-            this.inputYears == '' || TAE === 0) {
-            this.monthlyPayment = '-';
-            return;
-         }
-
+      calculateMonthlyPayment(amount, TAE, years) {
          const monthlyPayment = monthlyPaymentFormula(amount, TAE, years);
 
-         this.monthlyPayment = this.milesAndCommaFormat(monthlyPayment) + ' €';
-
-         this.totalToPay = this.milesAndCommaFormat(monthlyPayment * years * 12);
-
-         this.totalInterest = this.milesAndCommaFormat(monthlyPayment * years * 12 - amount);
+         this.monthlyPayment = numberToMilesAndCommaFormat(monthlyPayment) + ' €';
+         this.totalToPay = numberToMilesAndCommaFormat(monthlyPayment * years * 12);
+         this.totalInterest = numberToMilesAndCommaFormat(monthlyPayment * years * 12 - amount);
 
          this.interestPercentage = (
             (monthlyPayment * years * 12 - amount) / amount * 100)
@@ -125,21 +100,18 @@ export default {
             amount,
             TAE,
             years,
-            'totalToPay': parseFloat(this.totalToPay.replace(/\./g, '')),
+            'totalToPay': milesAndCommaToNumberFormat(this.totalToPay),
          });
-      },
-      milesAndCommaFormat(number) {
-         const parts = number.toFixed(2).toString().split('.');
-         const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-         const decimalPart = parts[1];
-         return integerPart + ',' + decimalPart;
       },
       updateMortgageValues(mortgageValues) {
          this.$emit('retrieveMortgageValues', mortgageValues);
       },
    },
    mounted() {
-      this.calculateMonthlyPayment();
+      this.calculateMonthlyPayment(this.inputAmount, this.inputTAE, this.inputYears);
+   },
+   components: {
+      money3: Money3Component,
    },
 };
 </script>
