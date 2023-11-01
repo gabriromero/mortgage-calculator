@@ -27,8 +27,8 @@
             </div>
          </div>
          <div v-if="selectedAmortizationType == 'Annual'" class="annual-amortization-body mt-4">
-            <input class="form-control text-center"
-                   v-model="amortizationValue" id="inputEmail3" placeholder="Annual amount">
+            <money3 class="form-control text-center" v-bind="amountFormat"
+                    v-model="amortizationValue" placeholder="Amount"/>
          </div>
          <div v-if="selectedAmortizationType == 'Number'" class="number-amortization-body mt-4">
             <input class="form-control text-center"
@@ -65,21 +65,21 @@
          <div class="mt-5" v-if="amortizationValue != ''">
             <p class="text-center">
                You will end up paying the bank
-               <b>{{ milesAndCommaFormat(parseFloat(totalAmountAmortizing)) }}€</b>
+               <b>{{ this.totalAmountAmortizing }}€</b>
             </p>
             <p class="text-center">
                A total of
-               <b>{{ milesAndCommaFormat((totalAmountAmortizing-mortgageValues.amount)) }}€</b>
+               <b>{{ this.totalInterest }}€</b>
                in interest (
                <b>
-                  {{ (((totalAmountAmortizing / mortgageValues.amount) - 1) * 100).toFixed(2) }}%
+                  {{ this.interestPercentage }}%
                </b>
                )
             </p>
             <p class="text-center">
                Total interest saved:
                <span class="text-success">
-                  {{ milesAndCommaFormat((mortgageValues.totalToPay - totalAmountAmortizing))}}€
+                  {{ this.interestSaved }}€
                </span></p>
             <p class="text-center">Months reduced from:</p>
             <p>
@@ -95,13 +95,19 @@
 
 <script>
 import {getTotalAmountYearAmmortization} from '../../utils/mortgageCalculations';
+import {
+   amountFormat,
+   numberToMilesAndCommaFormat,
+} from '../../utils/format';
+import {Money3Component} from 'v-money3';
 export default {
    name: 'AmortizationsForm',
    data() {
       return {
          selectedAmortizationType: 'Annual',
-         amortizationValue: '',
+         amortizationValue: '1000',
          totalAmountAmortizing: 0,
+         amountFormat: amountFormat,
       };
    },
    props: {
@@ -117,19 +123,7 @@ export default {
          },
          deep: true,
       },
-      amortizationValue: function(input) {
-         this.amortizationValue = input.replace(/\D/g, '')
-            .replace(/\B(?=(\d{3})+(?!\d)\.?)/g, '.');
-
-         const maxAmountLength = 9;
-         if (this.amortizationValue.length > maxAmountLength) {
-            this.amortizationValue = this.amortizationValue.slice(0, maxAmountLength);
-         }
-
-         if (this.amortizationValue.length > 0) {
-            this.updateAmortizationData();
-         }
-
+      amortizationValue: function() {
          this.updateToTalAmountAmortizing();
       },
       selectedAmortizationType: function() {
@@ -142,12 +136,6 @@ export default {
             amortizationType: this.selectedAmortizationType,
             amortizationValue: this.amortizationValue,
          });
-      },
-      milesAndCommaFormat(number) {
-         const parts = number.toFixed(2).toString().split('.');
-         const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-         const decimalPart = parts[1];
-         return integerPart + ',' + decimalPart;
       },
       yearsFromMonths(months) {
          const yearsPart = Math.floor(months / 12) + ' years';
@@ -167,13 +155,33 @@ export default {
             parseInt(this.amortizationValue.replaceAll('.', '')),
          );
 
-         this.totalAmountAmortizing = totalAmountYearAmmortizationData.totalAmount;
+         debugger;
+
+         this.totalAmountAmortizing = numberToMilesAndCommaFormat(
+            totalAmountYearAmmortizationData.totalAmount,
+         );
+
          this.totalMonthsAmortizing = totalAmountYearAmmortizationData.totalMonths;
+
+         this.totalInterest = numberToMilesAndCommaFormat(
+            parseInt(this.totalAmountAmortizing)-parseFloat(this.mortgageValues.amount),
+         );
+
+         this.interestPercentage = ((
+            (this.totalAmountAmortizing / this.mortgageValues.amount) - 1) * 100
+         ).toFixed(2);
+
+         this.interestSaved = numberToMilesAndCommaFormat(
+            (this.mortgageValues.totalToPay - this.totalAmountAmortizing),
+         );
       },
 
    },
    mounted() {
       this.updateAmortizationData();
+   },
+   components: {
+      money3: Money3Component,
    },
 
 };

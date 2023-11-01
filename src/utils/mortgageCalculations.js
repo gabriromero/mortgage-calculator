@@ -109,7 +109,7 @@ function getTotalAmountYearAmmortization(amount, TAE, years, yearAmmortization) 
       }
    }
    return {
-      'totalAmount': totalAmount.toFixed(2),
+      'totalAmount': totalAmount,
       'totalMonths': nMonth,
    };
 }
