@@ -24,7 +24,8 @@
         "indent": ["error", 3],
         "require-jsdoc": "off",
         "valid-jsdoc": "off",
-        "no-unused-vars": ["error", { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }]
+        "no-unused-vars": ["error", { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }],
+        "no-multiple-empty-lines": ["error", { "max": 1, "maxEOF": 0, "maxBOF": 1 }]
     },
     "overrides": [
         {

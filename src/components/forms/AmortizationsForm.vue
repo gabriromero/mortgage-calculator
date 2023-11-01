@@ -62,14 +62,14 @@
                </div>
             </div>
          </div>
-         <div class="mt-5" v-if="amortizationValue != ''">
+         <div class="mt-5" v-if="amortizationValue != '' && totalInterest">
             <p class="text-center">
                You will end up paying the bank
-               <b>{{ this.totalAmountAmortizing }}€</b>
+               <b>{{ numberToMilesAndCommaFormat(this.totalAmountAmortizing) }}€</b>
             </p>
             <p class="text-center">
                A total of
-               <b>{{ this.totalInterest }}€</b>
+               <b>{{ numberToMilesAndCommaFormat(this.totalInterest) }}€</b>
                in interest (
                <b>
                   {{ this.interestPercentage }}%
@@ -79,7 +79,7 @@
             <p class="text-center">
                Total interest saved:
                <span class="text-success">
-                  {{ this.interestSaved }}€
+                  {{ numberToMilesFormat(this.interestSaved) }}€
                </span></p>
             <p class="text-center">Months reduced from:</p>
             <p>
@@ -98,6 +98,7 @@ import {getTotalAmountYearAmmortization} from '../../utils/mortgageCalculations'
 import {
    amountFormat,
    numberToMilesAndCommaFormat,
+   numberToMilesFormat,
 } from '../../utils/format';
 import {Money3Component} from 'v-money3';
 export default {
@@ -105,7 +106,7 @@ export default {
    data() {
       return {
          selectedAmortizationType: 'Annual',
-         amortizationValue: '1000',
+         amortizationValue: '0',
          totalAmountAmortizing: 0,
          amountFormat: amountFormat,
       };
@@ -119,18 +120,21 @@ export default {
    watch: {
       mortgageValues: {
          handler: function() {
-            this.updateToTalAmountAmortizing();
+            this.updateTotalAmountAmortizing();
          },
          deep: true,
-      },
-      amortizationValue: function() {
-         this.updateToTalAmountAmortizing();
       },
       selectedAmortizationType: function() {
          this.updateAmortizationData();
       },
+      amortizationValue: function() {
+         this.updateAmortizationData();
+         this.updateTotalAmountAmortizing();
+      },
    },
    methods: {
+      numberToMilesAndCommaFormat,
+      numberToMilesFormat,
       updateAmortizationData() {
          this.$emit('retrieveAmortizationData', {
             amortizationType: this.selectedAmortizationType,
@@ -147,38 +151,31 @@ export default {
             return yearsPart + monthsPart;
          }
       },
-      updateToTalAmountAmortizing() {
+      updateTotalAmountAmortizing() {
          const totalAmountYearAmmortizationData = getTotalAmountYearAmmortization(
             this.mortgageValues.amount,
             this.mortgageValues.TAE,
             this.mortgageValues.years,
             parseInt(this.amortizationValue.replaceAll('.', '')),
          );
-
-         debugger;
-
-         this.totalAmountAmortizing = numberToMilesAndCommaFormat(
-            totalAmountYearAmmortizationData.totalAmount,
-         );
+         this.totalAmountAmortizing = totalAmountYearAmmortizationData.totalAmount,
 
          this.totalMonthsAmortizing = totalAmountYearAmmortizationData.totalMonths;
 
-         this.totalInterest = numberToMilesAndCommaFormat(
-            parseInt(this.totalAmountAmortizing)-parseFloat(this.mortgageValues.amount),
-         );
+         this.totalInterest = parseInt(this.totalAmountAmortizing)-
+            parseFloat(this.mortgageValues.amount);
 
          this.interestPercentage = ((
             (this.totalAmountAmortizing / this.mortgageValues.amount) - 1) * 100
          ).toFixed(2);
 
-         this.interestSaved = numberToMilesAndCommaFormat(
-            (this.mortgageValues.totalToPay - this.totalAmountAmortizing),
-         );
+         debugger;
+         this.interestSaved = (this.mortgageValues.totalToPay - this.totalAmountAmortizing);
       },
 
    },
    mounted() {
-      this.updateAmortizationData();
+      this.updateTotalAmountAmortizing();
    },
    components: {
       money3: Money3Component,

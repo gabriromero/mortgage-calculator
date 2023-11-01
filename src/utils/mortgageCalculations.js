@@ -54,7 +54,6 @@ function getAmortizationTableYearAmmortization(amount, TAE, years, yearAmmortiza
 
       balance = balance - principal;
 
-
       amortizationTable.push({
          month: nMonth,
          interest: interest.toFixed(2) + ' €',
@@ -98,7 +97,6 @@ function getTotalAmountYearAmmortization(amount, TAE, years, yearAmmortization) 
       balance = balance - principal;
 
       totalAmount += monthlyPayment;
-
 
       if (nMonth % 12 === 0) {
          if (balance < yearAmmortization) {

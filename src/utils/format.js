@@ -37,6 +37,12 @@ export function numberToMilesAndCommaFormat(number) {
    return integerPart + ',' + decimalPart;
 }
 
+export function numberToMilesFormat(number) {
+   const parts = number.toFixed(2).toString().split('.');
+   const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+   return integerPart;
+}
+
 export function milesAndCommaToNumberFormat(number) {
    return parseFloat(number.replace(/\./g, '').replace(',', '.'));
 }

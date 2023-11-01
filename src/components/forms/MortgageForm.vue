@@ -34,13 +34,15 @@
             <div class="row justify-content-md-center monthly-payment mb-5">
                <div for="inputPassword3">Monthly payment</div>
                <input class="col-sm-9 text-center month-paymeny-input"
-                      v-model="monthlyPayment" disabled="true">
+                      v-model="formattedMonthlyPayment" disabled="true">
             </div>
             <div class="mt-5" v-if="monthlyPayment != '-'">
-               <p class="text-center">You will end up paying the bank <b>{{ totalToPay }}€</b></p>
                <p class="text-center">
-                  A total of <b>{{ this.totalInterest }}€</b>
-                  in interest (<b>{{ this.interestPercentage }}</b>)
+                  You will end up paying the bank <b>{{ formattedTotalToPay }}€</b>
+               </p>
+               <p class="text-center">
+                  A total of <b>{{ formattedTotalInterest }}€</b>
+                  in interest (<b>{{ interestPercentage }}</b>)
                </p>
             </div>
          </div>
@@ -55,7 +57,6 @@ import {
    TAEFormat,
    yearsFormat,
    numberToMilesAndCommaFormat,
-   milesAndCommaToNumberFormat,
 } from '../../utils/format';
 import {Money3Component} from 'v-money3';
 export default {
@@ -65,13 +66,24 @@ export default {
          inputAmount: '100000',
          inputTAE: '3.50',
          inputYears: '30',
-         monthlyPayment: '-',
+         monthlyPayment: 0,
          totalToPay: 0,
          totalInterest: 0,
          amountFormat: amountFormat,
          TAEFormat: TAEFormat,
          yearsFormat: yearsFormat,
       };
+   },
+   computed: {
+      formattedMonthlyPayment() {
+         return numberToMilesAndCommaFormat(this.monthlyPayment) + '€';
+      },
+      formattedTotalToPay() {
+         return numberToMilesAndCommaFormat(this.totalToPay);
+      },
+      formattedTotalInterest() {
+         return numberToMilesAndCommaFormat(this.totalInterest);
+      },
    },
    watch: {
       inputAmount: function() {
@@ -88,9 +100,9 @@ export default {
       calculateMonthlyPayment(amount, TAE, years) {
          const monthlyPayment = monthlyPaymentFormula(amount, TAE, years);
 
-         this.monthlyPayment = numberToMilesAndCommaFormat(monthlyPayment) + ' €';
-         this.totalToPay = numberToMilesAndCommaFormat(monthlyPayment * years * 12);
-         this.totalInterest = numberToMilesAndCommaFormat(monthlyPayment * years * 12 - amount);
+         this.monthlyPayment = monthlyPayment;
+         this.totalToPay = monthlyPayment * years * 12;
+         this.totalInterest = monthlyPayment * years * 12 - amount;
 
          this.interestPercentage = (
             (monthlyPayment * years * 12 - amount) / amount * 100)
@@ -100,7 +112,7 @@ export default {
             amount,
             TAE,
             years,
-            'totalToPay': milesAndCommaToNumberFormat(this.totalToPay),
+            'totalToPay': this.totalToPay,
          });
       },
       updateMortgageValues(mortgageValues) {

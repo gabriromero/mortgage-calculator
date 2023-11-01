@@ -108,7 +108,6 @@ export default {
   padding-top: 0.7em;
 }
 
-
 .zebra-table .even-row {
   background-color: #f7f7f7;
 }
@@ -116,6 +115,5 @@ export default {
 .zebra-table .odd-row {
   background-color: #fff;
 }
-
 
 </style>

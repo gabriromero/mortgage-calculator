@@ -29,7 +29,6 @@
    </div>
 </template>
 
-
 <script>
 import MortgageForm from './components/forms/MortgageForm.vue';
 import OptionsTab from './components/OptionsTab.vue';
