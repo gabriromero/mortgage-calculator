@@ -169,7 +169,6 @@ export default {
             (this.totalAmountAmortizing / this.mortgageValues.amount) - 1) * 100
          ).toFixed(2);
 
-         debugger;
          this.interestSaved = (this.mortgageValues.totalToPay - this.totalAmountAmortizing);
       },
 

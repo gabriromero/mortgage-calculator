@@ -1,3 +1,8 @@
+import {
+   numberToMilesAndCommaFormat,
+   numberToMilesFormat,
+} from '../utils/format';
+
 function monthlyPaymentFormula(amount, TAE, years) {
    const i = TAE / 12 / 100;
    const n = years * 12;
@@ -21,10 +26,10 @@ function getAmortizationTable(amount, TAE, years) {
 
       amortizationTable.push({
          month: j + 1,
-         interest: interest.toFixed(2) + ' €',
-         principal: principal.toFixed(2) + ' €',
-         monthlyPayment: monthlyPayment.toFixed(2) + ' €',
-         balance: balance.toFixed(2) + ' €',
+         interest: numberToMilesAndCommaFormat(interest) + ' €',
+         principal: numberToMilesAndCommaFormat(principal) + ' €',
+         monthlyPayment: numberToMilesAndCommaFormat(monthlyPayment) + ' €',
+         balance: numberToMilesAndCommaFormat(balance) + ' €',
       });
    }
    return amortizationTable;
@@ -53,13 +58,14 @@ function getAmortizationTableYearAmmortization(amount, TAE, years, yearAmmortiza
       }
 
       balance = balance - principal;
+      const monthlyPaymentAmount = interest + principal;
 
       amortizationTable.push({
          month: nMonth,
-         interest: interest.toFixed(2) + ' €',
-         principal: principal.toFixed(2) + ' €',
-         monthlyPayment: (interest + principal).toFixed(2) + ' €',
-         balance: balance.toFixed(2) + ' €',
+         interest: numberToMilesAndCommaFormat(interest) + ' €',
+         principal: numberToMilesAndCommaFormat(principal) + ' €',
+         monthlyPayment: numberToMilesAndCommaFormat(monthlyPaymentAmount) + ' €',
+         balance: numberToMilesAndCommaFormat(balance) + ' €',
       });
 
       if (nMonth % 12 === 0) {
@@ -70,9 +76,9 @@ function getAmortizationTableYearAmmortization(amount, TAE, years, yearAmmortiza
          amortizationTable.push({
             month: 'Amortization',
             interest: '-',
-            principal: yearAmmortization.toFixed(2) + ' €',
-            monthlyPayment: yearAmmortization.toFixed(2) + ' €',
-            balance: balance.toFixed(2) + ' €',
+            principal: numberToMilesFormat(yearAmmortization) + ' €',
+            monthlyPayment: numberToMilesFormat(yearAmmortization) + ' €',
+            balance: numberToMilesAndCommaFormat(balance) + ' €',
          });
       }
    }
