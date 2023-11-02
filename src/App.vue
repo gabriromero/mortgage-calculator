@@ -17,23 +17,21 @@
          </div>
       </div>
    </div>
-   <div>
-      <div class="container text-center mt-4">
-         <h3>Amortization Table</h3>
-         <AmortizationTable
-            :isAdvanced="isAdvanced"
-            :mortgageValues="mortgageValues"
-            :amortizationData="amortizationData"
-         />
-      </div>
+   <div class="container text-center mt-4 pb-5">
+      <h3>Amortization Table</h3>
+      <AmortizationTable
+         :isAdvanced="isAdvanced"
+         :mortgageValues="mortgageValues"
+         :amortizationData="amortizationData"
+      />
    </div>
 </template>
 
 <script>
-import MortgageForm from './components/forms/MortgageForm.vue';
 import OptionsTab from './components/OptionsTab.vue';
-import AmortizationsForm from './components/forms/AmortizationsForm.vue';
 import AmortizationTable from './components/AmortizationTable.vue';
+import MortgageForm from './components/forms/MortgageForm.vue';
+import AmortizationsForm from './components/forms/AmortizationsForm.vue';
 
 export default {
    components: {
