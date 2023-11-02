@@ -9,58 +9,38 @@
             <div class="form-check form-check-inline">
                <input class="form-check-input"
                       type="radio" value="Annual" v-model="selectedAmortizationType"/>
-               <label class="form-check-label" for="annual">
+               <label class="form-check-label" for="annual"
+                      @click="selectedAmortizationType = 'Annual'">
                   Annual amortization
                </label>
             </div>
             <div class="form-check form-check-inline">
                <input class="form-check-input"
                       type="radio" value="Number" v-model="selectedAmortizationType"/>
-               <label class="form-check-label" for="number">
+               <label class="form-check-label" for="number"
+                      @click="selectedAmortizationType = 'Number'">
                   Specific number of amortizations
                </label>
             </div>
             <div class="form-check form-check-inline">
                <input class="form-check-input"
                       type="radio" value="Custom" v-model="selectedAmortizationType" />
-               <label class="form-check-label" for="custom">Custom amortization</label>
+               <label class="form-check-label" for="custom"
+                      @click="selectedAmortizationType = 'Custom'">
+                  Custom amortization</label>
             </div>
          </div>
-         <div v-if="selectedAmortizationType == 'Annual'" class="annual-amortization-body mt-4">
+         <div v-if="selectedAmortizationType == 'Annual' || selectedAmortizationType == 'Number'"
+              class="annual-amortization-body mt-4">
             <money3 class="form-control text-center" v-bind="amountFormat"
                     v-model="amortizationValue" placeholder="Amount"/>
          </div>
          <div v-if="selectedAmortizationType == 'Number'" class="number-amortization-body mt-4">
-            <input class="form-control text-center"
-                   v-model="amortizationValue" id="inputEmail3" placeholder="Payment amount">
-            <div class="row mt-3">
-               <div class="col-md-6 text-center">
-                  <button class="btn btn-secondary btn-number-amortization">5</button>
-                  <p class="number-amortization-description">
-                     Payment every 6 years
-                  </p>
-               </div>
-               <div class="col-md-6 text-center">
-                  <button class="btn btn-secondary btn-number-amortization">10</button>
-                  <p class="number-amortization-description">
-                     Payment every 3 years
-                  </p>
-               </div>
-            </div>
-            <div class="row">
-               <div class="col-md-6 text-center">
-                  <button class="btn btn-secondary btn-number-amortization">15</button>
-                  <p class="number-amortization-description">
-                     Payment every 2 years
-                  </p>
-               </div>
-               <div class="col-md-6 text-center">
-                  <button class="btn btn-secondary btn-number-amortization">60</button>
-                  <p class="number-amortization-description">
-                     Payment every 6 months
-                  </p>
-               </div>
-            </div>
+            <SpecificNumberAmortizationForm
+               :mortgageValues="mortgageValues"
+               :amortizationValue="amortizationValue"
+               @retrieveAmortizationData="updateAmortizationData"
+            />
          </div>
          <div class="mt-5" v-if="amortizationValue != '' && totalInterest">
             <p class="text-center">
@@ -100,13 +80,14 @@ import {
    numberToMilesAndCommaFormat,
    numberToMilesFormat,
 } from '../../utils/format';
+import SpecificNumberAmortizationForm from './SpecificNumberAmortizationForm.vue';
 import {Money3Component} from 'v-money3';
 export default {
    name: 'AmortizationsForm',
    data() {
       return {
          selectedAmortizationType: 'Annual',
-         amortizationValue: '0',
+         amortizationValue: 1000,
          totalAmountAmortizing: 0,
          amountFormat: amountFormat,
       };
@@ -178,6 +159,7 @@ export default {
    },
    components: {
       money3: Money3Component,
+      SpecificNumberAmortizationForm,
    },
 
 };
