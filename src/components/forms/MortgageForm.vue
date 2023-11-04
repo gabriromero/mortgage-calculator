@@ -108,15 +108,15 @@ export default {
             (monthlyPayment * years * 12 - amount) / amount * 100)
             .toFixed(2) + '%';
 
-         this.updateMortgageValues({
+         this.updateMortgageData({
             amount,
             TAE,
             years,
             'totalToPay': this.totalToPay,
          });
       },
-      updateMortgageValues(mortgageValues) {
-         this.$emit('retrieveMortgageValues', mortgageValues);
+      updateMortgageData(mortgageData) {
+         this.$emit('retrieveMortgageData', mortgageData);
       },
    },
    mounted() {

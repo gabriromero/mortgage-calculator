@@ -86,7 +86,12 @@ export default {
                      this.mortgageValues.amount,
                      this.mortgageValues.TAE,
                      this.mortgageValues.years,
-                     parseInt(this.amortizationData.amortizationValue.replaceAll('.', '')),
+                     parseInt(
+                        this.amortizationData.
+                           amortizationData.
+                           amortizationAmount.
+                           replaceAll('.', ''),
+                     ),
                   );
             }
          }

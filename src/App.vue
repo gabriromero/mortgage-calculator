@@ -6,12 +6,13 @@
       <div class="container">
          <div class="row justify-content-md-center">
             <div class="col col-lg-6">
-               <MortgageForm @retrieveMortgageValues="updateMortgageValues" />
+               <MortgageForm @retrieveMortgageData="updateMortgageData" />
             </div>
             <div v-if="isAdvanced" class="col col-lg-6">
                <AmortizationsForm
                   @retrieveAmortizationData="updateAmortizationData"
-                  :mortgageValues="mortgageValues"
+                  :mortgageData="mortgageData"
+                  :amortizationData="amortizationData"
                />
             </div>
          </div>
@@ -21,7 +22,7 @@
       <h3>Amortization Table</h3>
       <AmortizationTable
          :isAdvanced="isAdvanced"
-         :mortgageValues="mortgageValues"
+         :mortgageData="mortgageData"
          :amortizationData="amortizationData"
       />
    </div>
@@ -43,7 +44,7 @@ export default {
    data() {
       return {
          isAdvanced: false,
-         mortgageValues: {},
+         mortgageData: {},
          amortizationData: {},
       };
    },
@@ -51,8 +52,8 @@ export default {
       updateMode(mode) {
          this.isAdvanced = mode === 'advanced' ? true : false;
       },
-      updateMortgageValues: function(mortgageValues) {
-         this.mortgageValues = mortgageValues;
+      updateMortgageData: function(mortgageData) {
+         this.mortgageData = mortgageData;
       },
       updateAmortizationData: function(amortizationData) {
          this.amortizationData = amortizationData;

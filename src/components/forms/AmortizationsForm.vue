@@ -33,16 +33,16 @@
          <div v-if="selectedAmortizationType == 'Annual' || selectedAmortizationType == 'Number'"
               class="annual-amortization-body mt-4">
             <money3 class="form-control text-center" v-bind="amountFormat"
-                    v-model="amortizationValue" placeholder="Amount"/>
+                    v-model="amortizationAmount" placeholder="Amount"/>
          </div>
          <div v-if="selectedAmortizationType == 'Number'" class="number-amortization-body mt-4">
             <SpecificNumberAmortizationForm
-               :mortgageValues="mortgageValues"
-               :amortizationValue="amortizationValue"
+               :mortgageData="mortgageData"
+               :amortizationData="amortizationData"
                @retrieveAmortizationData="updateAmortizationData"
             />
          </div>
-         <div class="mt-5" v-if="amortizationValue != '' && totalInterest">
+         <div class="mt-5" v-if="amortizationData != '' && totalInterest">
             <p class="text-center">
                You will end up paying the bank
                <b>{{ numberToMilesAndCommaFormat(this.totalAmountAmortizing) }}€</b>
@@ -63,7 +63,7 @@
                </span></p>
             <p class="text-center">Months reduced from:</p>
             <p>
-               {{ yearsFromMonths(mortgageValues.years * 12) }}
+               {{ yearsFromMonths(mortgageData.years * 12) }}
                ➡️
                {{ yearsFromMonths(this.totalMonthsAmortizing) }}
             </p>
@@ -79,6 +79,7 @@ import {
    amountFormat,
    numberToMilesAndCommaFormat,
    numberToMilesFormat,
+   yearsFromMonths,
 } from '../../utils/format';
 import SpecificNumberAmortizationForm from './SpecificNumberAmortizationForm.vue';
 import {Money3Component} from 'v-money3';
@@ -87,75 +88,84 @@ export default {
    data() {
       return {
          selectedAmortizationType: 'Annual',
-         amortizationValue: 1000,
+         amortizationData: '',
+         amortizationAmount: 1000,
          totalAmountAmortizing: 0,
          amountFormat: amountFormat,
       };
    },
    props: {
-      mortgageValues: {
+      mortgageData: {
+         type: Object,
+         required: true,
+      },
+      amortizationData: {
          type: Object,
          required: true,
       },
    },
    watch: {
-      mortgageValues: {
+      mortgageData: {
          handler: function() {
-            this.updateTotalAmountAmortizing();
+            this.calculateActualAmortization();
          },
          deep: true,
       },
-      selectedAmortizationType: function() {
-         this.updateAmortizationData();
-      },
-      amortizationValue: function() {
-         this.updateAmortizationData();
-         this.updateTotalAmountAmortizing();
+      amortizationAmount: function() {
+         this.calculateActualAmortization();
       },
    },
    methods: {
       numberToMilesAndCommaFormat,
       numberToMilesFormat,
+      yearsFromMonths,
+      calculateActualAmortization() {
+         if (this.selectedAmortizationType == 'Annual') {
+            this.calculateAnnualAmortization();
+            this.amortizationData = this.amortizationAmount;
+         } else if (this.selectedAmortizationType == 'Number') {
+            this.calculateSpecificNumberAmortization();
+         }
+         debugger;
+         this.updateAmortizationData();
+      },
       updateAmortizationData() {
          this.$emit('retrieveAmortizationData', {
             amortizationType: this.selectedAmortizationType,
-            amortizationValue: this.amortizationValue,
+            amortizationData: this.amortizationData,
          });
       },
-      yearsFromMonths(months) {
-         const yearsPart = Math.floor(months / 12) + ' years';
-         const monthsPart = ' and ' + months % 12 + ' months';
-
-         if (months % 12 == 0) {
-            return yearsPart;
-         } else {
-            return yearsPart + monthsPart;
-         }
-      },
-      updateTotalAmountAmortizing() {
+      calculateAnnualAmortization() {
          const totalAmountYearAmmortizationData = getTotalAmountYearAmmortization(
-            this.mortgageValues.amount,
-            this.mortgageValues.TAE,
-            this.mortgageValues.years,
-            parseInt(this.amortizationValue.replaceAll('.', '')),
+            this.mortgageData.amount,
+            this.mortgageData.TAE,
+            this.mortgageData.years,
+            parseInt(this.amortizationAmount.replaceAll('.', '')),
          );
          this.totalAmountAmortizing = totalAmountYearAmmortizationData.totalAmount,
 
          this.totalMonthsAmortizing = totalAmountYearAmmortizationData.totalMonths;
 
          this.totalInterest = parseInt(this.totalAmountAmortizing)-
-            parseFloat(this.mortgageValues.amount);
+            parseFloat(this.mortgageData.amount);
 
          this.interestPercentage = ((
-            (this.totalAmountAmortizing / this.mortgageValues.amount) - 1) * 100
+            (this.totalAmountAmortizing / this.mortgageData.amount) - 1) * 100
          ).toFixed(2);
 
-         this.interestSaved = (this.mortgageValues.totalToPay - this.totalAmountAmortizing);
+         this.interestSaved = (this.mortgageData.totalToPay - this.totalAmountAmortizing);
+      },
+      calculateSpecificNumberAmortization() {
+         alert('Not implemented yet');
+         this.amortizationData = {
+            amortizationAmount: 0,
+            numberOfAmmortizations: 60,
+         };
       },
 
    },
    mounted() {
-      this.updateTotalAmountAmortizing();
+      this.calculateActualAmortization();
    },
    components: {
       money3: Money3Component,

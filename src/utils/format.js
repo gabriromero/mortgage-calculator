@@ -46,3 +46,14 @@ export function numberToMilesFormat(number) {
 export function milesAndCommaToNumberFormat(number) {
    return parseFloat(number.replace(/\./g, '').replace(',', '.'));
 }
+
+export function yearsFromMonths(months) {
+   const yearsPart = Math.floor(months / 12) + ' years';
+   const monthsPart = ' and ' + months % 12 + ' months';
+
+   if (months % 12 == 0) {
+      return yearsPart;
+   } else {
+      return yearsPart + monthsPart;
+   }
+}
