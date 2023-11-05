@@ -134,6 +134,8 @@ export default {
             this.calculateAnnualAmortization();
          } else if (this.amortizationData.amortizationType == 'Number') {
             this.calculateSpecificNumberAmortization();
+         } else if (this.amortizationData.amortizationType == 'Custom') {
+            this.calculateCustomAmortization();
          }
 
          this.updateAmortizationData(this.amortizationData);
@@ -178,6 +180,13 @@ export default {
          ).toFixed(2);
 
          this.interestSaved = (this.mortgageData.totalToPay - this.totalAmountAmortizing);
+      },
+      calculateCustomAmortization() {
+         this.totalAmountAmortizing = 0;
+         this.totalMonthsAmortizing = 0;
+         this.totalInterest = 0;
+         this.interestPercentage = 0;
+         this.interestSaved = 0;
       },
       setInitialAmortizationData() {
          this.amortizationData = {

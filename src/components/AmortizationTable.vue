@@ -106,6 +106,8 @@ export default {
                      ),
                      this.amortizationData.amortizationValues.frequency,
                   ).amortizationTable;
+            } else if (this.amortizationData.amortizationType === 'Custom') {
+               this.amortizationTable = [];
             }
          }
       },
