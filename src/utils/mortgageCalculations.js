@@ -93,8 +93,66 @@ function getYearAmortizationData(amount, TAE, years, amortizationAmount) {
    };
 }
 
+function getNumberAmortizationData(amount, TAE, years, amortizationAmount, frequency) {
+   if (amortizationAmount == '') {
+      return [];
+   }
+   const monthlyPayment = monthlyPaymentFormula(amount, TAE, years);
+   const i = TAE / 12 / 100;
+
+   let balance = amount;
+   let interest = 0;
+   let principal = 0;
+   let totalAmount = 0;
+   const amortizationTable = [];
+
+   let nMonth = 0;
+   while (balance > 1) {
+      nMonth++;
+      interest = balance * i;
+      principal = monthlyPayment - interest;
+      totalAmount += monthlyPayment;
+
+      if (interest + principal > balance) {
+         principal = balance - interest;
+      }
+
+      balance = balance - principal;
+      const monthlyPaymentAmount = interest + principal;
+
+      amortizationTable.push({
+         month: nMonth,
+         interest: numberToMilesAndCommaFormat(interest) + ' €',
+         principal: numberToMilesAndCommaFormat(principal) + ' €',
+         monthlyPayment: numberToMilesAndCommaFormat(monthlyPaymentAmount) + ' €',
+         balance: numberToMilesAndCommaFormat(balance) + ' €',
+      });
+
+      if (nMonth % frequency === 0) {
+         if (balance < amortizationAmount) {
+            amortizationAmount = balance;
+         }
+         balance = balance - amortizationAmount;
+         totalAmount += amortizationAmount;
+         amortizationTable.push({
+            month: 'Amortization',
+            interest: '-',
+            principal: numberToMilesFormat(amortizationAmount) + ' €',
+            monthlyPayment: numberToMilesFormat(amortizationAmount) + ' €',
+            balance: numberToMilesAndCommaFormat(balance) + ' €',
+         });
+      }
+   }
+   return {
+      'amortizationTable': amortizationTable,
+      'totalAmount': totalAmount,
+      'totalMonths': nMonth,
+   };
+}
+
 export {
    monthlyPaymentFormula,
    getAmortizationTable,
    getYearAmortizationData,
+   getNumberAmortizationData,
 };

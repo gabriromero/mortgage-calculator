@@ -78,6 +78,7 @@
 <script>
 import {
    getYearAmortizationData,
+   getNumberAmortizationData,
 } from '../../utils/mortgageCalculations';
 import {
    amountFormat,
@@ -158,7 +159,25 @@ export default {
          this.interestSaved = (this.mortgageData.totalToPay - this.totalAmountAmortizing);
       },
       calculateSpecificNumberAmortization() {
+         const totalAmountYearAmortizationData = getNumberAmortizationData(
+            this.mortgageData.amount,
+            this.mortgageData.TAE,
+            this.mortgageData.years,
+            parseInt(this.amortizationData.amortizationAmount.replaceAll('.', '')),
+            this.amortizationData.amortizationValues.frequency,
+         );
+         this.totalAmountAmortizing = totalAmountYearAmortizationData.totalAmount,
 
+         this.totalMonthsAmortizing = totalAmountYearAmortizationData.totalMonths;
+
+         this.totalInterest = parseInt(this.totalAmountAmortizing)-
+            parseFloat(this.mortgageData.amount);
+
+         this.interestPercentage = ((
+            (this.totalAmountAmortizing / this.mortgageData.amount) - 1) * 100
+         ).toFixed(2);
+
+         this.interestSaved = (this.mortgageData.totalToPay - this.totalAmountAmortizing);
       },
       setInitialAmortizationData() {
          this.amortizationData = {

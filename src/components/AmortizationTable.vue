@@ -35,6 +35,7 @@
 import {
    getAmortizationTable,
    getYearAmortizationData,
+   getNumberAmortizationData,
 } from '../utils/mortgageCalculations';
 export default {
    data() {
@@ -91,6 +92,19 @@ export default {
                            amortizationAmount.
                            replaceAll('.', ''),
                      ),
+                  ).amortizationTable;
+            } else if (this.amortizationData.amortizationType === 'Number') {
+               this.amortizationTable =
+                  getNumberAmortizationData(
+                     this.mortgageData.amount,
+                     this.mortgageData.TAE,
+                     this.mortgageData.years,
+                     parseInt(
+                        this.amortizationData.
+                           amortizationAmount.
+                           replaceAll('.', ''),
+                     ),
+                     this.amortizationData.amortizationValues.frequency,
                   ).amortizationTable;
             }
          }
