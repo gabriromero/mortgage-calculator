@@ -34,7 +34,7 @@
 <script>
 import {
    getAmortizationTable,
-   getAmortizationTableYearAmmortization,
+   getYearAmortizationData,
 } from '../utils/mortgageCalculations';
 export default {
    data() {
@@ -82,7 +82,7 @@ export default {
          } else {
             if (this.amortizationData.amortizationType === 'Annual') {
                this.amortizationTable =
-                  getAmortizationTableYearAmmortization(
+                  getYearAmortizationData(
                      this.mortgageData.amount,
                      this.mortgageData.TAE,
                      this.mortgageData.years,
@@ -91,7 +91,7 @@ export default {
                            amortizationAmount.
                            replaceAll('.', ''),
                      ),
-                  );
+                  ).amortizationTable;
             }
          }
       },

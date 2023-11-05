@@ -76,7 +76,9 @@
 </template>
 
 <script>
-import {getTotalAmountYearAmmortization} from '../../utils/mortgageCalculations';
+import {
+   getYearAmortizationData,
+} from '../../utils/mortgageCalculations';
 import {
    amountFormat,
    numberToMilesAndCommaFormat,
@@ -136,15 +138,15 @@ export default {
          this.updateAmortizationData(this.amortizationData);
       },
       calculateAnnualAmortization() {
-         const totalAmountYearAmmortizationData = getTotalAmountYearAmmortization(
+         const totalAmountYearAmortizationData = getYearAmortizationData(
             this.mortgageData.amount,
             this.mortgageData.TAE,
             this.mortgageData.years,
             parseInt(this.amortizationData.amortizationAmount.replaceAll('.', '')),
          );
-         this.totalAmountAmortizing = totalAmountYearAmmortizationData.totalAmount,
+         this.totalAmountAmortizing = totalAmountYearAmortizationData.totalAmount,
 
-         this.totalMonthsAmortizing = totalAmountYearAmmortizationData.totalMonths;
+         this.totalMonthsAmortizing = totalAmountYearAmortizationData.totalMonths;
 
          this.totalInterest = parseInt(this.totalAmountAmortizing)-
             parseFloat(this.mortgageData.amount);
@@ -155,15 +157,15 @@ export default {
 
          this.interestSaved = (this.mortgageData.totalToPay - this.totalAmountAmortizing);
       },
+      calculateSpecificNumberAmortization() {
+
+      },
       setInitialAmortizationData() {
          this.amortizationData = {
             amortizationType: 'Annual',
             amortizationAmount: this.amortizationData.amortizationAmount,
             amortizationValues: {},
          };
-      },
-      calculateSpecificNumberAmortization() {
-
       },
       updateAmortizationData(amortizationData) {
          this.amortizationData = amortizationData;

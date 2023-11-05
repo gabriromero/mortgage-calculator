@@ -9,6 +9,7 @@ function monthlyPaymentFormula(amount, TAE, years) {
    return amount * (((1+i)**n)*i/(((1+i)**n)-1));
 }
 
+// Amortization table functions
 function getAmortizationTable(amount, TAE, years) {
    const monthlyPayment = monthlyPaymentFormula(amount, TAE, years);
    const i = TAE / 12 / 100;
@@ -35,8 +36,8 @@ function getAmortizationTable(amount, TAE, years) {
    return amortizationTable;
 }
 
-function getAmortizationTableYearAmmortization(amount, TAE, years, ammortizationAmount) {
-   if (ammortizationAmount == '') {
+function getYearAmortizationData(amount, TAE, years, amortizationAmount) {
+   if (amortizationAmount == '') {
       return [];
    }
    const monthlyPayment = monthlyPaymentFormula(amount, TAE, years);
@@ -45,130 +46,48 @@ function getAmortizationTableYearAmmortization(amount, TAE, years, ammortization
    let balance = amount;
    let interest = 0;
    let principal = 0;
-   const amortizationTable = [];
-
-   let nMonth = 0;
-   while (balance > 1) {
-      nMonth++;
-      interest = balance * i;
-      principal = monthlyPayment - interest;
-
-      if (interest + principal > balance) {
-         principal = balance - interest;
-      }
-
-      balance = balance - principal;
-      const monthlyPaymentAmount = interest + principal;
-
-      amortizationTable.push({
-         month: nMonth,
-         interest: numberToMilesAndCommaFormat(interest) + ' €',
-         principal: numberToMilesAndCommaFormat(principal) + ' €',
-         monthlyPayment: numberToMilesAndCommaFormat(monthlyPaymentAmount) + ' €',
-         balance: numberToMilesAndCommaFormat(balance) + ' €',
-      });
-
-      if (nMonth % 12 === 0) {
-         if (balance < ammortizationAmount) {
-            ammortizationAmount = balance;
-         }
-         balance = balance - ammortizationAmount;
-         amortizationTable.push({
-            month: 'Amortization',
-            interest: '-',
-            principal: numberToMilesFormat(ammortizationAmount) + ' €',
-            monthlyPayment: numberToMilesFormat(ammortizationAmount) + ' €',
-            balance: numberToMilesAndCommaFormat(balance) + ' €',
-         });
-      }
-   }
-   return amortizationTable;
-}
-
-function getAmortizationTableSpecificNumberAmmortization(
-   amount,
-   TAE,
-   years,
-   ammortizationAmount,
-   ammortizationFrequency,
-) {
-   if (ammortizationAmount == '') {
-      return [];
-   }
-   const monthlyPayment = monthlyPaymentFormula(amount, TAE, years);
-   const i = TAE / 12 / 100;
-
-   let balance = amount;
-   let interest = 0;
-   let principal = 0;
-   const amortizationTable = [];
-
-   let nMonth = 0;
-   while (balance > 1) {
-      nMonth++;
-      interest = balance * i;
-      principal = monthlyPayment - interest;
-
-      if (interest + principal > balance) {
-         principal = balance - interest;
-      }
-
-      balance = balance - principal;
-      const monthlyPaymentAmount = interest + principal;
-
-      amortizationTable.push({
-         month: nMonth,
-         interest: numberToMilesAndCommaFormat(interest) + ' €',
-         principal: numberToMilesAndCommaFormat(principal) + ' €',
-         monthlyPayment: numberToMilesAndCommaFormat(monthlyPaymentAmount) + ' €',
-         balance: numberToMilesAndCommaFormat(balance) + ' €',
-      });
-
-      if (nMonth % 12 === 0) {
-         if (balance < ammortizationAmount) {
-            ammortizationAmount = balance;
-         }
-         balance = balance - ammortizationAmount;
-         amortizationTable.push({
-            month: 'Amortization',
-            interest: '-',
-            principal: numberToMilesFormat(ammortizationAmount) + ' €',
-            monthlyPayment: numberToMilesFormat(ammortizationAmount) + ' €',
-            balance: numberToMilesAndCommaFormat(balance) + ' €',
-         });
-      }
-   }
-   return amortizationTable;
-}
-
-function getTotalAmountYearAmmortization(amount, TAE, years, ammortizationAmount) {
-   const monthlyPayment = monthlyPaymentFormula(amount, TAE, years);
-   const i = TAE / 12 / 100;
-
-   let balance = amount;
-   let interest = 0;
-   let principal = 0;
-
    let totalAmount = 0;
+   const amortizationTable = [];
 
    let nMonth = 0;
    while (balance > 1) {
       nMonth++;
       interest = balance * i;
       principal = monthlyPayment - interest;
-      balance = balance - principal;
-
       totalAmount += monthlyPayment;
 
+      if (interest + principal > balance) {
+         principal = balance - interest;
+      }
+
+      balance = balance - principal;
+      const monthlyPaymentAmount = interest + principal;
+
+      amortizationTable.push({
+         month: nMonth,
+         interest: numberToMilesAndCommaFormat(interest) + ' €',
+         principal: numberToMilesAndCommaFormat(principal) + ' €',
+         monthlyPayment: numberToMilesAndCommaFormat(monthlyPaymentAmount) + ' €',
+         balance: numberToMilesAndCommaFormat(balance) + ' €',
+      });
+
       if (nMonth % 12 === 0) {
-         if (balance < ammortizationAmount) {
-            ammortizationAmount = balance;
+         if (balance < amortizationAmount) {
+            amortizationAmount = balance;
          }
-         balance = balance - ammortizationAmount;
-         totalAmount += ammortizationAmount;
+         balance = balance - amortizationAmount;
+         totalAmount += amortizationAmount;
+         amortizationTable.push({
+            month: 'Amortization',
+            interest: '-',
+            principal: numberToMilesFormat(amortizationAmount) + ' €',
+            monthlyPayment: numberToMilesFormat(amortizationAmount) + ' €',
+            balance: numberToMilesAndCommaFormat(balance) + ' €',
+         });
       }
    }
    return {
+      'amortizationTable': amortizationTable,
       'totalAmount': totalAmount,
       'totalMonths': nMonth,
    };
@@ -177,6 +96,5 @@ function getTotalAmountYearAmmortization(amount, TAE, years, ammortizationAmount
 export {
    monthlyPaymentFormula,
    getAmortizationTable,
-   getAmortizationTableYearAmmortization,
-   getTotalAmountYearAmmortization,
+   getYearAmortizationData,
 };
