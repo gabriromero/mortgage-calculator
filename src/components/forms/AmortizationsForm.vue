@@ -8,34 +8,36 @@
          <div class="amortizations-options d-flex flex-column">
             <div class="form-check form-check-inline">
                <input class="form-check-input"
-                      type="radio" value="Annual" v-model="selectedAmortizationType"/>
+                      type="radio" value="Annual" v-model="amortizationData.amortizationType"/>
                <label class="form-check-label" for="annual"
-                      @click="selectedAmortizationType = 'Annual'">
+                      @click="changeAmortizationType('Annual')">
                   Annual amortization
                </label>
             </div>
             <div class="form-check form-check-inline">
                <input class="form-check-input"
-                      type="radio" value="Number" v-model="selectedAmortizationType"/>
+                      type="radio" value="Number" v-model="amortizationData.amortizationType"/>
                <label class="form-check-label" for="number"
-                      @click="selectedAmortizationType = 'Number'">
+                      @click="changeAmortizationType('Number')">
                   Specific number of amortizations
                </label>
             </div>
             <div class="form-check form-check-inline">
                <input class="form-check-input"
-                      type="radio" value="Custom" v-model="selectedAmortizationType" />
+                      type="radio" value="Custom" v-model="amortizationData.amortizationType" />
                <label class="form-check-label" for="custom"
-                      @click="selectedAmortizationType = 'Custom'">
+                      @click="changeAmortizationType('Custom')">
                   Custom amortization</label>
             </div>
          </div>
-         <div v-if="selectedAmortizationType == 'Annual' || selectedAmortizationType == 'Number'"
+         <div v-if="amortizationData.amortizationType == 'Annual'
+                 || amortizationData.amortizationType == 'Number'"
               class="annual-amortization-body mt-4">
             <money3 class="form-control text-center" v-bind="amountFormat"
-                    v-model="amortizationAmount" placeholder="Amount"/>
+                    v-model="amortizationData.amortizationAmount" placeholder="Amount"/>
          </div>
-         <div v-if="selectedAmortizationType == 'Number'" class="number-amortization-body mt-4">
+         <div v-if="amortizationData.amortizationType == 'Number'"
+              class="number-amortization-body mt-4">
             <SpecificNumberAmortizationForm
                :mortgageData="mortgageData"
                :amortizationData="amortizationData"
@@ -87,19 +89,18 @@ export default {
    name: 'AmortizationsForm',
    data() {
       return {
-         selectedAmortizationType: 'Annual',
-         amortizationData: '',
-         amortizationAmount: 1000,
+         amortizationData: {
+            amortizationType: 'Annual',
+            amortizationAmount: '1000',
+            amortizationValues: {},
+         },
+         amortizationValues: '',
          totalAmountAmortizing: 0,
          amountFormat: amountFormat,
       };
    },
    props: {
       mortgageData: {
-         type: Object,
-         required: true,
-      },
-      amortizationData: {
          type: Object,
          required: true,
       },
@@ -111,36 +112,35 @@ export default {
          },
          deep: true,
       },
-      amortizationAmount: function() {
-         this.calculateActualAmortization();
+      amortizationData: {
+         handler: function() {
+            this.calculateActualAmortization();
+         },
+         deep: true,
       },
    },
    methods: {
       numberToMilesAndCommaFormat,
       numberToMilesFormat,
       yearsFromMonths,
+      changeAmortizationType(amortizationType) {
+         this.amortizationData.amortizationType = amortizationType;
+      },
       calculateActualAmortization() {
-         if (this.selectedAmortizationType == 'Annual') {
+         if (this.amortizationData.amortizationType == 'Annual') {
             this.calculateAnnualAmortization();
-            this.amortizationData = this.amortizationAmount;
-         } else if (this.selectedAmortizationType == 'Number') {
+         } else if (this.amortizationData.amortizationType == 'Number') {
             this.calculateSpecificNumberAmortization();
          }
-         debugger;
-         this.updateAmortizationData();
-      },
-      updateAmortizationData() {
-         this.$emit('retrieveAmortizationData', {
-            amortizationType: this.selectedAmortizationType,
-            amortizationData: this.amortizationData,
-         });
+
+         this.updateAmortizationData(this.amortizationData);
       },
       calculateAnnualAmortization() {
          const totalAmountYearAmmortizationData = getTotalAmountYearAmmortization(
             this.mortgageData.amount,
             this.mortgageData.TAE,
             this.mortgageData.years,
-            parseInt(this.amortizationAmount.replaceAll('.', '')),
+            parseInt(this.amortizationData.amortizationAmount.replaceAll('.', '')),
          );
          this.totalAmountAmortizing = totalAmountYearAmmortizationData.totalAmount,
 
@@ -155,16 +155,24 @@ export default {
 
          this.interestSaved = (this.mortgageData.totalToPay - this.totalAmountAmortizing);
       },
-      calculateSpecificNumberAmortization() {
-         alert('Not implemented yet');
+      setInitialAmortizationData() {
          this.amortizationData = {
-            amortizationAmount: 0,
-            numberOfAmmortizations: 60,
+            amortizationType: 'Annual',
+            amortizationAmount: this.amortizationData.amortizationAmount,
+            amortizationValues: {},
          };
+      },
+      calculateSpecificNumberAmortization() {
+
+      },
+      updateAmortizationData(amortizationData) {
+         this.amortizationData = amortizationData;
+         this.$emit('retrieveAmortizationData', amortizationData);
       },
 
    },
    mounted() {
+      this.setInitialAmortizationData();
       this.calculateActualAmortization();
    },
    components: {

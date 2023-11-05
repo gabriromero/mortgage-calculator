@@ -43,7 +43,7 @@ export default {
       };
    },
    props: {
-      mortgageValues: {
+      mortgageData: {
          type: Object,
          required: true,
       },
@@ -57,7 +57,7 @@ export default {
       },
    },
    watch: {
-      mortgageValues: {
+      mortgageData: {
          handler: function() {
             this.calculateAmortizationTable();
          },
@@ -77,18 +77,17 @@ export default {
       calculateAmortizationTable() {
          if (!this.isAdvanced) {
             this.amortizationTable = getAmortizationTable(
-               this.mortgageValues.amount, this.mortgageValues.TAE, this.mortgageValues.years,
+               this.mortgageData.amount, this.mortgageData.TAE, this.mortgageData.years,
             );
          } else {
             if (this.amortizationData.amortizationType === 'Annual') {
                this.amortizationTable =
                   getAmortizationTableYearAmmortization(
-                     this.mortgageValues.amount,
-                     this.mortgageValues.TAE,
-                     this.mortgageValues.years,
+                     this.mortgageData.amount,
+                     this.mortgageData.TAE,
+                     this.mortgageData.years,
                      parseInt(
                         this.amortizationData.
-                           amortizationData.
                            amortizationAmount.
                            replaceAll('.', ''),
                      ),

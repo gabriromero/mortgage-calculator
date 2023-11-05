@@ -12,7 +12,6 @@
                <AmortizationsForm
                   @retrieveAmortizationData="updateAmortizationData"
                   :mortgageData="mortgageData"
-                  :amortizationData="amortizationData"
                />
             </div>
          </div>

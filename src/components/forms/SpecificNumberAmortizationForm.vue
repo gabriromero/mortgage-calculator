@@ -28,55 +28,66 @@ export default {
       };
    },
    props: {
-      mortgageValues: {
+      mortgageData: {
          type: Object,
          required: true,
       },
-      amortization: {
-         type: String,
+      amortizationData: {
+         type: Object,
          required: true,
       },
    },
    methods: {
-      updateAmortizationData() {
-         this.$emit('retrieveAmortizationData', this.amortizationData);
-      },
       getSpecificOptions() {
          return [
             {
                frequency: 3,
-               numberOfAmmortizations: this.mortgageValues.years * 4,
+               numberOfAmmortizations: this.mortgageData.years * 4,
                description: 'Payment every 3 months',
             },
             {
                frequency: 4,
-               numberOfAmmortizations: this.mortgageValues.years * 3,
+               numberOfAmmortizations: this.mortgageData.years * 3,
                description: 'Payment every 4 months',
             },
             {
                frequency: 6,
-               numberOfAmmortizations: this.mortgageValues.years * 2,
+               numberOfAmmortizations: this.mortgageData.years * 2,
                description: 'Payment every 6 months',
             },
             {
                frequency: 24,
-               numberOfAmmortizations: parseInt(this.mortgageValues.years / 2),
+               numberOfAmmortizations: parseInt(this.mortgageData.years / 2),
                description: 'Payment every 2 years',
             },
          ];
       },
       changeOption(index) {
          this.selectedOption = index;
-         this.updateAmortizationData();
+         this.updateAmortizationData({
+            amortizationType: 'Number',
+            amortizationAmount: this.amortizationData.amortizationAmount,
+            amortizationValues: {
+               frequency: this.specificOptions[index].frequency,
+               numberOfAmmortizations: this.specificOptions[index].numberOfAmmortizations,
+            },
+         });
+      },
+      updateAmortizationData(amortizationData) {
+         console.log(amortizationData);
+         this.$emit('retrieveAmortizationData', amortizationData);
       },
    },
    watch: {
-      mortgageValues: {
+      mortgageData: {
          handler: function() {
             this.specificOptions = this.getSpecificOptions();
          },
          deep: true,
       },
+   },
+   mounted: function() {
+      this.changeOption(0);
    },
 };
 </script>
