@@ -175,7 +175,6 @@ export default {
    },
    mounted() {
       this.setInitialAmortizationData();
-      this.calculateActualAmortization();
    },
    components: {
       money3: Money3Component,
