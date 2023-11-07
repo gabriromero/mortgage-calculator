@@ -1,25 +1,30 @@
 <template>
    <main>
-      <span :class="{ 'selected-option': !isAdvanced }" class="option-button"
-            @click="setMode('simple')">Simple</span>
-      <span :class="{ 'selected-option': isAdvanced }" class="option-button"
-            @click="setMode('advanced')">Amortizing</span>
+      <span :class="{ 'selected-option': mode === this.MODES.SIMPLE }" class="option-button"
+            @click="setMode(this.MODES.SIMPLE)">Simple</span>
+      <span :class="{ 'selected-option': mode === this.MODES.AMORTIZING }" class="option-button"
+            @click="setMode(this.MODES.AMORTIZING)">Amortizing</span>
    </main>
 </template>
 
 <script>
+import {MODES} from '../constants/appConstants';
+
 export default {
    name: 'OptionsTab',
    data() {
       return {
-         isAdvanced: false,
+         mode: MODES.SIMPLE,
       };
    },
    methods: {
       setMode(mode) {
-         this.isAdvanced = mode === 'advanced' ? true : false;
+         this.mode = mode;
          this.$emit('change-mode', mode);
       },
+   },
+   created() {
+      this.MODES = MODES;
    },
 };
 </script>

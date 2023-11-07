@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import {AMORTIZATIONS_TYPES} from '../../constants/appConstants';
 export default {
    name: 'SpecificNumberAmortizationForm',
    data() {
@@ -65,7 +66,7 @@ export default {
       changeOption(index) {
          this.selectedOption = index;
          this.updateAmortizationData({
-            amortizationType: 'Number',
+            amortizationType: AMORTIZATIONS_TYPES.NUMBER,
             amortizationAmount: this.amortizationData.amortizationAmount,
             amortizationValues: {
                frequency: this.specificOptions[index].frequency,
@@ -87,6 +88,9 @@ export default {
    },
    mounted: function() {
       this.changeOption(0);
+   },
+   created() {
+      this.AMORTIZATIONS_TYPES = AMORTIZATIONS_TYPES;
    },
 };
 </script>

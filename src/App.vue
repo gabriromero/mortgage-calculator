@@ -8,7 +8,7 @@
             <div class="col col-lg-6">
                <MortgageForm @retrieveMortgageData="updateMortgageData" />
             </div>
-            <div v-if="isAdvanced" class="col col-lg-6">
+            <div v-if="mode === this.MODES.AMORTIZING" class="col col-lg-6">
                <AmortizationsForm
                   @retrieveAmortizationData="updateAmortizationData"
                   :mortgageData="mortgageData"
@@ -20,7 +20,7 @@
    <div class="container text-center mt-4 pb-5">
       <h3>Amortization Table</h3>
       <AmortizationTable
-         :isAdvanced="isAdvanced"
+         :mode="mode"
          :mortgageData="mortgageData"
          :amortizationData="amortizationData"
       />
@@ -32,6 +32,7 @@ import OptionsTab from './components/OptionsTab.vue';
 import AmortizationTable from './components/AmortizationTable.vue';
 import MortgageForm from './components/forms/MortgageForm.vue';
 import AmortizationsForm from './components/forms/AmortizationsForm.vue';
+import {MODES} from './constants/appConstants';
 
 export default {
    components: {
@@ -42,14 +43,14 @@ export default {
    },
    data() {
       return {
-         isAdvanced: false,
+         mode: MODES.SIMPLE,
          mortgageData: {},
          amortizationData: {},
       };
    },
    methods: {
       updateMode(mode) {
-         this.isAdvanced = mode === 'advanced' ? true : false;
+         this.mode = mode;
       },
       updateMortgageData: function(mortgageData) {
          this.mortgageData = mortgageData;
@@ -57,6 +58,9 @@ export default {
       updateAmortizationData: function(amortizationData) {
          this.amortizationData = amortizationData;
       },
+   },
+   created() {
+      this.MODES = MODES;
    },
 };
 

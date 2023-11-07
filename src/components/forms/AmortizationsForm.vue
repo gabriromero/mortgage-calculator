@@ -8,17 +8,17 @@
          <div class="amortizations-options d-flex flex-column">
             <div class="form-check form-check-inline">
                <input class="form-check-input"
-                      type="radio" value="Annual" v-model="amortizationData.amortizationType"/>
+                      type="radio" value="annual" v-model="amortizationData.amortizationType"/>
                <label class="form-check-label" for="annual"
-                      @click="changeAmortizationType('Annual')">
+                      @click="changeAmortizationType(AMORTIZATIONS_TYPES.ANNUAL)">
                   Annual amortization
                </label>
             </div>
             <div class="form-check form-check-inline">
                <input class="form-check-input"
-                      type="radio" value="Number" v-model="amortizationData.amortizationType"/>
+                      type="radio" value="number" v-model="amortizationData.amortizationType"/>
                <label class="form-check-label" for="number"
-                      @click="changeAmortizationType('Number')">
+                      @click="changeAmortizationType(AMORTIZATIONS_TYPES.NUMBER)">
                   Specific number of amortizations
                </label>
             </div>
@@ -26,17 +26,17 @@
                <input class="form-check-input"
                       type="radio" value="Custom" v-model="amortizationData.amortizationType" />
                <label class="form-check-label" for="custom"
-                      @click="changeAmortizationType('Custom')">
+                      @click="changeAmortizationType(AMORTIZATIONS_TYPES.CUSTOM)">
                   Custom amortization</label>
             </div>
          </div>
-         <div v-if="amortizationData.amortizationType == 'Annual'
-                 || amortizationData.amortizationType == 'Number'"
+         <div v-if="amortizationData.amortizationType == AMORTIZATIONS_TYPES.ANNUAL
+                 || amortizationData.amortizationType == AMORTIZATIONS_TYPES.NUMBER"
               class="annual-amortization-body mt-4">
             <money3 class="form-control text-center" v-bind="amountFormat"
                     v-model="amortizationData.amortizationAmount" placeholder="Amount"/>
          </div>
-         <div v-if="amortizationData.amortizationType == 'Number'"
+         <div v-if="amortizationData.amortizationType == AMORTIZATIONS_TYPES.NUMBER"
               class="number-amortization-body mt-4">
             <SpecificNumberAmortizationForm
                :mortgageData="mortgageData"
@@ -86,6 +86,9 @@ import {
    numberToMilesFormat,
    yearsFromMonths,
 } from '../../utils/format';
+import {
+   AMORTIZATIONS_TYPES,
+} from '../../constants/appConstants';
 import SpecificNumberAmortizationForm from './SpecificNumberAmortizationForm.vue';
 import {Money3Component} from 'v-money3';
 export default {
@@ -93,7 +96,7 @@ export default {
    data() {
       return {
          amortizationData: {
-            amortizationType: 'Annual',
+            amortizationType: AMORTIZATIONS_TYPES.ANNUAL,
             amortizationAmount: '1000',
             amortizationValues: {},
          },
@@ -127,14 +130,15 @@ export default {
       numberToMilesFormat,
       yearsFromMonths,
       changeAmortizationType(amortizationType) {
+         console.log(amortizationType);
          this.amortizationData.amortizationType = amortizationType;
       },
       calculateActualAmortization() {
-         if (this.amortizationData.amortizationType == 'Annual') {
+         if (this.amortizationData.amortizationType == AMORTIZATIONS_TYPES.ANNUAL) {
             this.calculateAnnualAmortization();
-         } else if (this.amortizationData.amortizationType == 'Number') {
+         } else if (this.amortizationData.amortizationType == AMORTIZATIONS_TYPES.NUMBER) {
             this.calculateSpecificNumberAmortization();
-         } else if (this.amortizationData.amortizationType == 'Custom') {
+         } else if (this.amortizationData.amortizationType == AMORTIZATIONS_TYPES.CUSTOM) {
             this.calculateCustomAmortization();
          }
 
@@ -190,7 +194,7 @@ export default {
       },
       setInitialAmortizationData() {
          this.amortizationData = {
-            amortizationType: 'Annual',
+            amortizationType: AMORTIZATIONS_TYPES.ANNUAL,
             amortizationAmount: this.amortizationData.amortizationAmount,
             amortizationValues: {},
          };
@@ -203,6 +207,9 @@ export default {
    },
    mounted() {
       this.setInitialAmortizationData();
+   },
+   created() {
+      this.AMORTIZATIONS_TYPES = AMORTIZATIONS_TYPES;
    },
    components: {
       money3: Money3Component,

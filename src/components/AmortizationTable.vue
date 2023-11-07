@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import {MODES, AMORTIZATIONS_TYPES} from '../constants/appConstants';
 import {
    getAmortizationTable,
    getYearAmortizationData,
@@ -52,8 +53,8 @@ export default {
          type: Object,
          required: true,
       },
-      isAdvanced: {
-         type: Boolean,
+      mode: {
+         type: String,
          required: true,
       },
    },
@@ -70,18 +71,18 @@ export default {
          },
          deep: true,
       },
-      isAdvanced: function() {
+      mode: function() {
          this.calculateAmortizationTable();
       },
    },
    methods: {
       calculateAmortizationTable() {
-         if (!this.isAdvanced) {
+         if (this.mode === MODES.SIMPLE) {
             this.amortizationTable = getAmortizationTable(
                this.mortgageData.amount, this.mortgageData.TAE, this.mortgageData.years,
             );
-         } else {
-            if (this.amortizationData.amortizationType === 'Annual') {
+         } else if (this.mode === MODES.AMORTIZING) {
+            if (this.amortizationData.amortizationType === AMORTIZATIONS_TYPES.ANNUAL) {
                this.amortizationTable =
                   getYearAmortizationData(
                      this.mortgageData.amount,
@@ -93,7 +94,7 @@ export default {
                            replaceAll('.', ''),
                      ),
                   ).amortizationTable;
-            } else if (this.amortizationData.amortizationType === 'Number') {
+            } else if (this.amortizationData.amortizationType === AMORTIZATIONS_TYPES.NUMBER) {
                this.amortizationTable =
                   getNumberAmortizationData(
                      this.mortgageData.amount,
@@ -106,11 +107,15 @@ export default {
                      ),
                      this.amortizationData.amortizationValues.frequency,
                   ).amortizationTable;
-            } else if (this.amortizationData.amortizationType === 'Custom') {
+            } else if (this.amortizationData.amortizationType === AMORTIZATIONS_TYPES.CUSTOM) {
                this.amortizationTable = [];
             }
          }
       },
+   },
+   created() {
+      this.MODES = MODES;
+      this.AMORTIZATIONS_TYPES = AMORTIZATIONS_TYPES;
    },
 };
 </script>
