@@ -5,7 +5,7 @@
             <img src="/src/assets/icons/mortgage.svg" alt="logo" width="100" height="100">
          </div>
          <div>
-            <h1 class="mb-4 mt-3">Mortgate calculator</h1>
+            <h1 class="mb-4 mt-3">Mortgage calculator</h1>
 
             <div class="form-group row">
                <label for="inputEmail3" class="col-sm-6 col-form-label">Amount</label>

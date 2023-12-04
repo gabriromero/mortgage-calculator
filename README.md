@@ -1,4 +1,4 @@
-# mortgate-calculator
+# mortgage-calculator
 
 
 ## Recommended IDE Setup
