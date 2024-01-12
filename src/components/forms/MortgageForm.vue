@@ -15,10 +15,10 @@
                </div>
             </div>
             <div class="form-group row">
-               <label for="inputPassword3" class="col-sm-6 col-form-label">TAE</label>
+               <label for="inputPassword3" class="col-sm-6 col-form-label">Annual interest</label>
                <div class="col-sm-6">
-                  <money3 class="form-control text-center" v-bind="TAEFormat"
-                          v-model="inputTAE" id="inputPassword3" placeholder="% TAE"/>
+                  <money3 class="form-control text-center" v-bind="TINFormat"
+                          v-model="inputTIN" id="inputPassword3" placeholder="% TIN"/>
                </div>
             </div>
             <div class="form-group row">
@@ -54,7 +54,7 @@
 import {monthlyPaymentFormula} from '../../utils/mortgageCalculations';
 import {
    amountFormat,
-   TAEFormat,
+   TINFormat,
    yearsFormat,
    numberToMilesAndCommaFormat,
 } from '../../utils/format';
@@ -64,13 +64,13 @@ export default {
    data() {
       return {
          inputAmount: '100000',
-         inputTAE: '3.50',
+         inputTIN: '3.50',
          inputYears: '30',
          monthlyPayment: 0,
          totalToPay: 0,
          totalInterest: 0,
          amountFormat: amountFormat,
-         TAEFormat: TAEFormat,
+         TINFormat: TINFormat,
          yearsFormat: yearsFormat,
       };
    },
@@ -87,18 +87,18 @@ export default {
    },
    watch: {
       inputAmount: function() {
-         this.calculateMonthlyPayment(this.inputAmount, this.inputTAE, this.inputYears);
+         this.calculateMonthlyPayment(this.inputAmount, this.inputTIN, this.inputYears);
       },
-      inputTAE: function() {
-         this.calculateMonthlyPayment(this.inputAmount, this.inputTAE, this.inputYears);
+      inputTIN: function() {
+         this.calculateMonthlyPayment(this.inputAmount, this.inputTIN, this.inputYears);
       },
       inputYears: function() {
-         this.calculateMonthlyPayment(this.inputAmount, this.inputTAE, this.inputYears);
+         this.calculateMonthlyPayment(this.inputAmount, this.inputTIN, this.inputYears);
       },
    },
    methods: {
-      calculateMonthlyPayment(amount, TAE, years) {
-         const monthlyPayment = monthlyPaymentFormula(amount, TAE, years);
+      calculateMonthlyPayment(amount, TIN, years) {
+         const monthlyPayment = monthlyPaymentFormula(amount, TIN, years);
 
          this.monthlyPayment = monthlyPayment;
          this.totalToPay = monthlyPayment * years * 12;
@@ -110,7 +110,7 @@ export default {
 
          this.updateMortgageData({
             amount,
-            TAE,
+            TIN,
             years,
             'totalToPay': this.totalToPay,
          });
@@ -120,7 +120,7 @@ export default {
       },
    },
    mounted() {
-      this.calculateMonthlyPayment(this.inputAmount, this.inputTAE, this.inputYears);
+      this.calculateMonthlyPayment(this.inputAmount, this.inputTIN, this.inputYears);
    },
    components: {
       money3: Money3Component,

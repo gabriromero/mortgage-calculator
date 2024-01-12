@@ -10,7 +10,7 @@ export const amountFormat= {
    focusOnRight: true,
 };
 
-export const TAEFormat = {
+export const TINFormat = {
    suffix: ' %',
    thousands: '.',
    precision: 2,

@@ -79,14 +79,14 @@ export default {
       calculateAmortizationTable() {
          if (this.mode === MODES.SIMPLE) {
             this.amortizationTable = getAmortizationTable(
-               this.mortgageData.amount, this.mortgageData.TAE, this.mortgageData.years,
+               this.mortgageData.amount, this.mortgageData.TIN, this.mortgageData.years,
             );
          } else if (this.mode === MODES.AMORTIZING) {
             if (this.amortizationData.amortizationType === AMORTIZATIONS_TYPES.ANNUAL) {
                this.amortizationTable =
                   getYearAmortizationData(
                      this.mortgageData.amount,
-                     this.mortgageData.TAE,
+                     this.mortgageData.TIN,
                      this.mortgageData.years,
                      parseInt(
                         this.amortizationData.
@@ -98,7 +98,7 @@ export default {
                this.amortizationTable =
                   getNumberAmortizationData(
                      this.mortgageData.amount,
-                     this.mortgageData.TAE,
+                     this.mortgageData.TIN,
                      this.mortgageData.years,
                      parseInt(
                         this.amortizationData.

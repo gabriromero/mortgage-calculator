@@ -3,16 +3,16 @@ import {
    numberToMilesFormat,
 } from '../utils/format';
 
-function monthlyPaymentFormula(amount, TAE, years) {
-   const i = TAE / 12 / 100;
+function monthlyPaymentFormula(amount, TIN, years) {
+   const i = TIN / 12 / 100;
    const n = years * 12;
    return amount * (((1+i)**n)*i/(((1+i)**n)-1));
 }
 
 // Amortization table functions
-function getAmortizationTable(amount, TAE, years) {
-   const monthlyPayment = monthlyPaymentFormula(amount, TAE, years);
-   const i = TAE / 12 / 100;
+function getAmortizationTable(amount, TIN, years) {
+   const monthlyPayment = monthlyPaymentFormula(amount, TIN, years);
+   const i = TIN / 12 / 100;
    const n = years * 12;
 
    let balance = amount;
@@ -36,12 +36,12 @@ function getAmortizationTable(amount, TAE, years) {
    return amortizationTable;
 }
 
-function getYearAmortizationData(amount, TAE, years, amortizationAmount) {
+function getYearAmortizationData(amount, TIN, years, amortizationAmount) {
    if (amortizationAmount == '') {
       return [];
    }
-   const monthlyPayment = monthlyPaymentFormula(amount, TAE, years);
-   const i = TAE / 12 / 100;
+   const monthlyPayment = monthlyPaymentFormula(amount, TIN, years);
+   const i = TIN / 12 / 100;
 
    let balance = amount;
    let interest = 0;
@@ -93,12 +93,12 @@ function getYearAmortizationData(amount, TAE, years, amortizationAmount) {
    };
 }
 
-function getNumberAmortizationData(amount, TAE, years, amortizationAmount, frequency) {
+function getNumberAmortizationData(amount, TIN, years, amortizationAmount, frequency) {
    if (amortizationAmount == '') {
       return [];
    }
-   const monthlyPayment = monthlyPaymentFormula(amount, TAE, years);
-   const i = TAE / 12 / 100;
+   const monthlyPayment = monthlyPaymentFormula(amount, TIN, years);
+   const i = TIN / 12 / 100;
 
    let balance = amount;
    let interest = 0;

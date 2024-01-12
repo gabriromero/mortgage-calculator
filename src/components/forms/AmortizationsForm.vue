@@ -147,7 +147,7 @@ export default {
       calculateAnnualAmortization() {
          const totalAmountYearAmortizationData = getYearAmortizationData(
             this.mortgageData.amount,
-            this.mortgageData.TAE,
+            this.mortgageData.TIN,
             this.mortgageData.years,
             parseInt(this.amortizationData.amortizationAmount.replaceAll('.', '')),
          );
@@ -167,7 +167,7 @@ export default {
       calculateSpecificNumberAmortization() {
          const totalAmountYearAmortizationData = getNumberAmortizationData(
             this.mortgageData.amount,
-            this.mortgageData.TAE,
+            this.mortgageData.TIN,
             this.mortgageData.years,
             parseInt(this.amortizationData.amortizationAmount.replaceAll('.', '')),
             this.amortizationData.amortizationValues.frequency,
