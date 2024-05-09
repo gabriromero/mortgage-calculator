@@ -1,5 +1,6 @@
 # mortgage-calculator
 
+Test it in: https://mg-calculator.netlify.app/
 
 ## Recommended IDE Setup
 
