@@ -88,12 +88,15 @@ export default {
    watch: {
       inputAmount: function() {
          this.calculateMonthlyPayment(this.inputAmount, this.inputTIN, this.inputYears);
+         this.updateURLParams();
       },
       inputTIN: function() {
          this.calculateMonthlyPayment(this.inputAmount, this.inputTIN, this.inputYears);
+         this.updateURLParams();
       },
       inputYears: function() {
          this.calculateMonthlyPayment(this.inputAmount, this.inputTIN, this.inputYears);
+         this.updateURLParams();
       },
    },
    methods: {
@@ -118,8 +121,38 @@ export default {
       updateMortgageData(mortgageData) {
          this.$emit('retrieveMortgageData', mortgageData);
       },
+      getQueryParams() {
+         const params = {};
+         const queryString = window.location.href.split('?')[1];
+         if (queryString) {
+            const pairs = queryString.split('&');
+            pairs.forEach(pair => {
+               const [key, value] = pair.split('=');
+               params[decodeURIComponent(key)] = decodeURIComponent(value);
+            });
+         }
+         return params;
+      },
+      updateURLParams() {
+         const params = new URLSearchParams();
+         params.set('amount', this.inputAmount);
+         params.set('tin', this.inputTIN.replace('.', ''));
+         params.set('years', this.inputYears);
+         const newUrl = `${window.location.pathname}?${params.toString()}`;
+         window.history.replaceState({}, '', newUrl);
+      },
    },
    mounted() {
+      const params = this.getQueryParams();
+      if (params.amount) {
+         this.inputAmount = params.amount;
+      }
+      if (params.tin) {
+         this.inputTIN = params.tin;
+      }
+      if (params.years) {
+         this.inputYears = params.years;
+      }
       this.calculateMonthlyPayment(this.inputAmount, this.inputTIN, this.inputYears);
    },
    components: {
